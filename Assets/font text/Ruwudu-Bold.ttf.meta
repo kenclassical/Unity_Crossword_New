@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 4ef4ee7fd182da048860f8df3b3e9f10
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Ruwudu
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 6749d4e76e00a9d43b300ccec88d9817, type: 3}
+  - {fileID: 12800000, guid: b9f93417ec3b5064bafa876353d06dc8, type: 3}
+  - {fileID: 12800000, guid: ac42fb255227da44fb6d0398cb56ab2d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
