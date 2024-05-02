@@ -156,29 +156,30 @@ public class WordCheckGrid : MonoBehaviour
     public void OnEndTurn(){
         if(CurrentTiles.Count > 0){
             if(CheckWords()){
-                foreach (var tile in CurrentTiles)
-                {
-                    if (!tile.HaveLetter)
+                if(Grid[4,4].HasLetter == true){
+                    foreach (var tile in CurrentTiles)
                     {
-                        tile.DeleteDrop();
-                        PV.RPC("GridOnline", RpcTarget.AllBuffered, tile.CurrentLetter, tile.Row, tile.Column, tile.CharImageGrid.name, tile.Points);
+                        if (!tile.HaveLetter)
+                        {
+                            tile.DeleteDrop();
+                            PV.RPC("GridOnline", RpcTarget.AllBuffered, tile.CurrentLetter, tile.Row, tile.Column, tile.CharImageGrid.name, tile.Points);
+                        }
                     }
+                    while (Hand.transform.childCount < 7)
+                    {
+                        Instantiate(deckChaterInstance.CradToHand, Hand.transform.position, Hand.transform.rotation, Hand.transform);
+                    }
+                    var points = Points();
+                    PV.RPC("PointsOnline",RpcTarget.AllBuffered,points,endTurn.currentPlayerIndex);
+                    endTurn.EndTurnPlayer();
                 }
-                while (Hand.transform.childCount < 7)
-                {
-                    Instantiate(deckChaterInstance.CradToHand, Hand.transform.position, Hand.transform.rotation, Hand.transform);
-                }
-                var points = Points();
-                PV.RPC("PointsOnline",RpcTarget.AllBuffered,points,endTurn.currentPlayerIndex);
-                endTurn.EndTurnPlayer();
-                UnityEngine.Debug.Log("true");
             }else{
-                UnityEngine.Debug.Log("false");
+                Debug.Log("false");
             }
         }else{
             TableGrid = Table.None;
+            ShowWord = "";
             endTurn.EndTurnPlayer();
-            Debug.Log(ScorePlayer1.text);
         }
     }
 
@@ -203,7 +204,7 @@ public class WordCheckGrid : MonoBehaviour
         var words = CreateWords();
         _wordsFound = words;
         var word = GetWord(words[0], words[1]);
-        UnityEngine.Debug.Log(word);
+        Debug.Log(word);
         if (_WordTiles.Count != 0)
         {
             var index1 = word.IndexOf('_');
@@ -410,7 +411,7 @@ public class WordCheckGrid : MonoBehaviour
                 {
                     ShowWord = reader.GetString("English_word").ToUpper() + " = " + reader.GetString("Thai_word");
                 }
-                UnityEngine.Debug.Log(ShowWord);
+                Debug.Log(ShowWord);
             }
         }
     }

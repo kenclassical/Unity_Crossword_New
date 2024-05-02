@@ -67,21 +67,27 @@ public class EndTurn : MonoBehaviour{
     private IEnumerator DelayStartTurn(int index)
     {
         TurnGame++;
-        Turn = Mathf.CeilToInt(TurnGame / 2);
-        RandomCheck.buttonCheck = true;
-        RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
-        RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
-        currentPlayerIndex = index;
-        nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Turn + "/5";
-        // ShowWordTurn.text = wordCheckGrid.ShowWord;
-        AllShowWord.Add(wordCheckGrid.ShowWord);
-        Debug.Log(AllShowWord);
-        if(Turn > 5){
+        if(TurnGame > 10){
+            if(wordCheckGrid.ShowWord != ""){
+                ShowWordTurn.text = wordCheckGrid.ShowWord;
+                AllShowWord.Add(wordCheckGrid.ShowWord);
+            }
             AreaGame.SetActive(false);
             AreaEndGame.SetActive(true);
             endGame.ShowEndGame();
+        }else{
+            Turn = Mathf.CeilToInt(TurnGame / 2);
+            RandomCheck.buttonCheck = true;
+            RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
+            RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
+            currentPlayerIndex = index;
+            nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Turn + "/5";
+            if(wordCheckGrid.ShowWord != ""){
+                ShowWordTurn.text = wordCheckGrid.ShowWord;
+                AllShowWord.Add(wordCheckGrid.ShowWord);
+            }
+            StartTurnPlayer();
         }
-        StartTurnPlayer();
         yield return new WaitForSeconds(0.1f);
     }
 }

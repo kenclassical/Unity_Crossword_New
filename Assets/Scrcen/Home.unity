@@ -2498,7 +2498,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usernameText: {fileID: 125723983}
-  nametext: 
   CrateroomCanvas: {fileID: 75659454}
   JoinroomCanvas: {fileID: 1285214267}
   CrateroomNameRoom: {fileID: 1831075732}

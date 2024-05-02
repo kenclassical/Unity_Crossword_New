@@ -1,6 +1,8 @@
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using UnityEngine.UI;
+using UnityEditor.VersionControl;
 
 public class EndGame : MonoBehaviour
 {
@@ -11,6 +13,16 @@ public class EndGame : MonoBehaviour
     public TMP_Text Sum;
     public int scorePlayerOne;
     public int scorePlayerTwo;
+    public GameObject AreaShow;
+    public GameObject TextVocabulary;
+    public GameObject AreaText;
+
+    private EndTurn endTurn;
+
+    void Awake()
+    {
+        endTurn = FindAnyObjectByType<EndTurn>();
+    }
 
     public void Score(int ScorePlayerOne,int ScorePlayerTwo){
         scorePlayerOne = ScorePlayerOne;
@@ -27,7 +39,26 @@ public class EndGame : MonoBehaviour
         }else if (scorePlayerOne < scorePlayerTwo){
             Sum.text = "PLAYER: " + Playtwo.text + " WIN";
         }else if (scorePlayerOne == scorePlayerTwo){
-            Sum.text = "ALWAYS";  
+            Sum.text = "DRAW";  
         }
+    }
+
+    public void ShowVocabulary(){
+        AreaShow.SetActive(true);
+        foreach(string word in endTurn.AllShowWord)
+        {
+            GameObject M = Instantiate(TextVocabulary,AreaText.transform);
+            TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
+            vocabularyText.text = word;
+        }
+    }
+
+    public void ExitGame(){
+        PhotonNetwork.LeaveRoom(true);
+        PhotonNetwork.LoadLevel("Home");
+    }
+
+    public void CaneclShow(){
+        AreaShow.SetActive(false);
     }
 }
