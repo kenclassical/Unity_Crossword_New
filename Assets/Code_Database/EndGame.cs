@@ -69,7 +69,7 @@ public class EndGame : MonoBehaviour
 
     private void AddSQL(){
         Num = GetNextAvailableNum();
-        string query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word)";
+        var query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word)";
         foreach (string word in endTurn.AllShowWord)
         {
             MySqlCommand innerCmd = new MySqlCommand(query, connection);
@@ -89,7 +89,7 @@ public class EndGame : MonoBehaviour
         int num = 1;
         int checkNum = 0;
         
-        string query = "SELECT Num FROM history WHERE Num = @Num";
+        var query = "SELECT Num FROM history WHERE Num = @Num";
         
         using (MySqlCommand cmd = new MySqlCommand(query, connection))
         {

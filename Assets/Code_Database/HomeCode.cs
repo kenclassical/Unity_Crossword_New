@@ -62,7 +62,7 @@ public class HomeCode : MonoBehaviourPunCallbacks
     }
 
     public void Playhistory(){
-
+        SceneManager.LoadScene("History");
     }
 
 }

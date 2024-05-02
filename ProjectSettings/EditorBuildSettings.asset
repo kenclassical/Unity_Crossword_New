@@ -27,6 +27,6 @@ EditorBuildSettings:
     path: Assets/Scrcen/Scenesgame.unity
     guid: 77109f7aaf947eb499b993886a597270
   - enabled: 1
-    path: Assets/Scrcen/EndGame.unity
+    path: Assets/Scrcen/History.unity
     guid: 861fdddb308713348aa369efa9986463
   m_configObjects: {}
