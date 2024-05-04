@@ -54,17 +54,17 @@ public class EndTurn : MonoBehaviour{
         }
     }
 
-    public void EndTurnPlayer(){
+    public void EndTurnPlayer(string ShowWord){
         currentPlayerIndex++;
         if (currentPlayerIndex >= PhotonNetwork.PlayerList.Length)
         {
             currentPlayerIndex = 0;
         }
-        PV.RPC("DelayStartTurn", RpcTarget.AllBuffered,currentPlayerIndex);
+        PV.RPC("DelayStartTurn", RpcTarget.AllBuffered,currentPlayerIndex,ShowWord);
     }
 
     [PunRPC]
-    private IEnumerator DelayStartTurn(int index)
+    private IEnumerator DelayStartTurn(int index,string ShowWord)
     {
         TurnGame++;
         if(TurnGame > 10){
@@ -82,9 +82,9 @@ public class EndTurn : MonoBehaviour{
             RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
             currentPlayerIndex = index;
             nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Turn + "/5";
-            if(wordCheckGrid.ShowWord != ""){
-                ShowWordTurn.text = wordCheckGrid.ShowWord;
-                AllShowWord.Add(wordCheckGrid.ShowWord);
+            if(ShowWord != ""){
+                ShowWordTurn.text = ShowWord;
+                AllShowWord.Add(ShowWord);
             }
             StartTurnPlayer();
         }

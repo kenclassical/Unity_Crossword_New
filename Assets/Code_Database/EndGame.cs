@@ -89,28 +89,28 @@ public class EndGame : MonoBehaviour
     private int GetNextAvailableNum()
     {
         int num = 1;
-        int checkNum = 0;
         
-        var query = "SELECT Num FROM history WHERE Num = @Num AND username = @loggedInUsername";
-        
-        using (MySqlCommand innerCmd = new MySqlCommand(query, connection))
+        while (true)
         {
-            innerCmd.Parameters.AddWithValue("@Num", num);
-            innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
+            var query = "SELECT COUNT(*) FROM history WHERE Num = @Num AND username = @loggedInUsername";
             
-            using (MySqlDataReader reader = innerCmd.ExecuteReader())
+            using (MySqlCommand innerCmd = new MySqlCommand(query, connection))
             {
-                if (reader.Read())
+                innerCmd.Parameters.AddWithValue("@Num", num);
+                innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
+                
+                int count = Convert.ToInt32(innerCmd.ExecuteScalar());
+                
+                if (count == 0)
                 {
-                    checkNum = reader.GetInt32(0);
+                    return num;
                 }
+                
+                num++;
             }
-            
-            num += checkNum;
         }
-        
-        return num;
     }
+
 
     public void ExitGame(){
         AddSQL();

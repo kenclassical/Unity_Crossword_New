@@ -171,7 +171,7 @@ public class WordCheckGrid : MonoBehaviour
                     }
                     var points = Points();
                     PV.RPC("PointsOnline",RpcTarget.AllBuffered,points,endTurn.currentPlayerIndex);
-                    endTurn.EndTurnPlayer();
+                    endTurn.EndTurnPlayer(ShowWord);
                 }
             }else{
                 Debug.Log("false");
@@ -179,7 +179,7 @@ public class WordCheckGrid : MonoBehaviour
         }else{
             TableGrid = Table.None;
             ShowWord = "";
-            endTurn.EndTurnPlayer();
+            endTurn.EndTurnPlayer(ShowWord);
         }
     }
 
