@@ -3,7 +3,6 @@ using Photon.Pun;
 using TMPro;
 using MySql.Data.MySqlClient;
 using UnityEngine.UI;
-using UnityEditor.VersionControl;
 using System;
 
 public class EndGame : MonoBehaviour
@@ -20,6 +19,7 @@ public class EndGame : MonoBehaviour
     public GameObject AreaText;
     private int Num;
     private EndTurn endTurn;
+    string loggedInUsername;
 
     //SQL
     private MySqlConnection connection;
@@ -34,6 +34,8 @@ public class EndGame : MonoBehaviour
 
     void Start()
     {
+        loggedInUsername = PlayerPrefs.GetString("LoggedInUsername", "Guest");
+        Debug.Log(loggedInUsername);
         Num = 1;     
     }
 
@@ -46,7 +48,13 @@ public class EndGame : MonoBehaviour
 
     public void ShowEndGame(){
         Playone.text = PhotonNetwork.PlayerList[0].NickName;
-        Playtwo.text = "";
+        Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
+        foreach(string word in endTurn.AllShowWord)
+        {
+            GameObject M = Instantiate(TextVocabulary,AreaText.transform);
+            TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
+            vocabularyText.text = word;
+        }
         if (scorePlayerOne > scorePlayerTwo){
             Sum.text = "PLAYER: " + Playone.text + " WIN";
         }else if (scorePlayerOne < scorePlayerTwo){
@@ -54,22 +62,15 @@ public class EndGame : MonoBehaviour
         }else if (scorePlayerOne == scorePlayerTwo){
             Sum.text = "DRAW";  
         }
-        AddSQL();
     }
 
     public void ShowVocabulary(){
         AreaShow.SetActive(true);
-        foreach(string word in endTurn.AllShowWord)
-        {
-            GameObject M = Instantiate(TextVocabulary,AreaText.transform);
-            TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
-            vocabularyText.text = word;
-        }
     }
 
     private void AddSQL(){
         Num = GetNextAvailableNum();
-        var query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word)";
+        var query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`,`username`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word,@loggedInUsername)";
         foreach (string word in endTurn.AllShowWord)
         {
             MySqlCommand innerCmd = new MySqlCommand(query, connection);
@@ -80,6 +81,7 @@ public class EndGame : MonoBehaviour
             innerCmd.Parameters.AddWithValue("@Num", Num);
             innerCmd.Parameters.AddWithValue("@Sum", Sum.text);
             innerCmd.Parameters.AddWithValue("@Word", word);
+            innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
             innerCmd.ExecuteNonQuery();
         }
     }
@@ -89,13 +91,14 @@ public class EndGame : MonoBehaviour
         int num = 1;
         int checkNum = 0;
         
-        var query = "SELECT Num FROM history WHERE Num = @Num";
+        var query = "SELECT Num FROM history WHERE Num = @Num AND username = @loggedInUsername";
         
-        using (MySqlCommand cmd = new MySqlCommand(query, connection))
+        using (MySqlCommand innerCmd = new MySqlCommand(query, connection))
         {
-            cmd.Parameters.AddWithValue("@Num", num);
+            innerCmd.Parameters.AddWithValue("@Num", num);
+            innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
             
-            using (MySqlDataReader reader = cmd.ExecuteReader())
+            using (MySqlDataReader reader = innerCmd.ExecuteReader())
             {
                 if (reader.Read())
                 {
@@ -110,6 +113,7 @@ public class EndGame : MonoBehaviour
     }
 
     public void ExitGame(){
+        AddSQL();
         PhotonNetwork.LeaveRoom(true);
         PhotonNetwork.LoadLevel("Home");
     }
