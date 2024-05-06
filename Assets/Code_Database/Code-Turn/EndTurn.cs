@@ -32,7 +32,7 @@ public class EndTurn : MonoBehaviour{
     }
     void Start(){
         AllShowWord = new List<string>();
-        nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Mathf.RoundToInt(TurnGame);
+        nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Mathf.RoundToInt(TurnGame) + "/5";
 
         buttonEnd.SetActive(false);
         buttonRandom.SetActive(false);

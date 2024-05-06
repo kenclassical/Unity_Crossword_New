@@ -21,8 +21,10 @@ public class Randomitem : MonoBehaviour
     private Color ColorAlpha50;
     public Color ColorAlphaButton;
     public Color ColorAlphaText;
+    private WordCheckGrid wordCheckGrid;
     void Awake()
     {
+        wordCheckGrid = FindAnyObjectByType<WordCheckGrid>();
         randomButton = GetComponent<Button>();
         cancelBTN = cancelButton.GetComponent<Button>();
         deckChaterInstance = FindObjectOfType<DeckChater>();
@@ -52,6 +54,7 @@ public class Randomitem : MonoBehaviour
 
     private void StateRandom()
     {
+        wordCheckGrid.BackToHand();
         textButton.text = "Confirm";
         HandRandom.SetActive(true);
         Area.SetActive(true);

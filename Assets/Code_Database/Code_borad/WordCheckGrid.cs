@@ -457,4 +457,24 @@ public class WordCheckGrid : MonoBehaviour
         tile.HasLetter = true;
         tile.HaveLetter = true;
     }
+
+    public void BackToHand(){
+        for (int i = 0; i < NumberOfRows; i++)
+        {
+            for (int j = 0; j < NumberOfColumns; j++)
+            {
+                DorpTable tile = Grid[i, j];
+                if (tile.transform.childCount > 0)
+                {
+                    GameObject draggedObject = tile.transform.GetChild(0).gameObject;
+                    draggedObject.transform.SetParent(Hand.transform);
+                    tile.HasLetter = false;
+                    tile.CurrentLetter = "";
+                    tile.Points = 0;
+                    tile.CharImageGrid = null;
+                }
+            }
+        }
+        CurrentTiles.Clear();
+    }
 }

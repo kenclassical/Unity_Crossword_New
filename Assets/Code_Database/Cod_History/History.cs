@@ -88,6 +88,7 @@ public class History : MonoBehaviour
         s2Text.text = Score2;
         sumText.text = SumAll;
         NumText.text = Num.ToString();
+        NumText.enabled = false;
     }
 
     public void CancelShow(){
