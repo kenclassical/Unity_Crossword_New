@@ -583,6 +583,7 @@ MonoBehaviour:
   buttonEnd: {fileID: 12429473}
   buttonRandom: {fileID: 792579889}
   buttonCancel: {fileID: 2069878501}
+  Hand: {fileID: 1408667886}
   nameTurn: {fileID: 1293598603}
   currentPlayerIndex: 0
   ShowWordTurn: {fileID: 213856320}
@@ -2082,7 +2083,6 @@ MonoBehaviour:
   Hand: {fileID: 1408667886}
   Area: {fileID: 1043705988}
   RandomText: {fileID: 1862934397}
-  Cell: {fileID: 3297120528690330689, guid: bf87b9e4a603771488d9b3626dd603c1, type: 3}
   textButton: {fileID: 1754263599}
   cancelButton: {fileID: 2069878501}
   endButton: {fileID: 12429473}
@@ -5555,7 +5555,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1983986941
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5686,6 +5686,8 @@ MonoBehaviour:
   DumbWodPrefab: {fileID: 1141371850}
   DumbWordButton: {fileID: 1983986940}
   Hand: {fileID: 1408667886}
+  HandLetter: []
+  GridLetter: []
 --- !u!1 &2069878501
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,7 +35,6 @@ public class EndGame : MonoBehaviour
     void Start()
     {
         loggedInUsername = PlayerPrefs.GetString("LoggedInUsername", "Guest");
-        Debug.Log(loggedInUsername);
         Num = 1;     
     }
 

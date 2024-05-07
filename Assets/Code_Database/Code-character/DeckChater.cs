@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DeckChater : MonoBehaviour
 {
@@ -33,6 +35,9 @@ public class DeckChater : MonoBehaviour
             for (int i = Hand.transform.childCount; i < 7; i++)
             {
                 Instantiate(CradToHand, Hand.transform.position, Hand.transform.rotation);
+                if(!PhotonNetwork.IsMasterClient){
+                    CradToHand.GetComponent<Image>().raycastTarget = false;
+                }
                 yield return new WaitForSeconds(0);
             }
         }

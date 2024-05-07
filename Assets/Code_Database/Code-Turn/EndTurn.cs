@@ -3,11 +3,13 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class EndTurn : MonoBehaviour{
     public GameObject buttonEnd;
     public GameObject buttonRandom;
     public GameObject buttonCancel;
+    public GameObject Hand;
     public TMP_Text nameTurn;
     public int currentPlayerIndex = 0;
     private float TurnGame = 1.0f;
@@ -46,9 +48,15 @@ public class EndTurn : MonoBehaviour{
 
     private void StartTurnPlayer(){
         if (PhotonNetwork.PlayerList[currentPlayerIndex].IsLocal){
+            foreach(Transform child in Hand.transform){
+                child.GetComponent<Image>().raycastTarget = true;
+            }
             buttonEnd.SetActive(true);
             buttonRandom.SetActive(true);
         } else {
+            foreach(Transform child in Hand.transform){
+                child.GetComponent<Image>().raycastTarget = false;
+            }
             buttonEnd.SetActive(false);
             buttonRandom.SetActive(false);
         }
