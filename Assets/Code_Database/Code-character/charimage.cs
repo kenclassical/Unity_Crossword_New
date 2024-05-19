@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using MySql.Data.MySqlClient;
 
 public class charimage : MonoBehaviourPunCallbacks
 {
@@ -15,7 +16,11 @@ public class charimage : MonoBehaviourPunCallbacks
 
     public GameObject Hand;
     public int numberOFCardInDeck;
+    private DeckChater deckChater;
 
+    void Awake(){
+        deckChater = FindObjectOfType<DeckChater>();
+    }
     void Update()
     {
         id = displaydeck[0].id;
@@ -34,18 +39,35 @@ public class charimage : MonoBehaviourPunCallbacks
 
     void DrawUniqueRandomCard()
     {
-        if (DeckChater.startdeck.Count > 0)
+        CharatImagedata newCard = null;
+        if(deckChater.Letter.Count > 0)
         {
-            int randomIndex = -1;
-            CharatImagedata newCard;
-            do
+            int randomIndex = Random.Range(0, deckChater.Letter.Count);
+            string selectedLetter = deckChater.Letter[randomIndex];
+             for (int i = 0; i < DeckChater.startdeck.Count; i++)
             {
-                randomIndex = Random.Range(0, DeckChater.startdeck.Count);
-                newCard = DeckChater.startdeck[randomIndex];
-            } while (displaydeck.Exists(card => card.id == newCard.id));
+                CharatImagedata card = DeckChater.startdeck[i];
+                if (card.charatletter.ToLower() == selectedLetter.ToLower())
+                {
+                    newCard = card;
+                    break;
+                }
+            }
 
-            displaydeck[0] = newCard;
-            DeckChater.startdeck.RemoveAt(randomIndex);
+            if (newCard != null)
+            {
+                displaydeck[0] = newCard;
+
+                deckChater.Letter.Remove(selectedLetter);
+            }
+        }else{
+            int randomIndex = Random.Range(0, DeckChater.startdeck.Count);
+            newCard = DeckChater.startdeck[randomIndex];
+
+            if (newCard != null)
+            {
+                displaydeck[0] = newCard;
+            }
         }
     }
 }

@@ -19,5 +19,13 @@ public class GamePlay : MonoBehaviourPun
         // }
         Playone.text = PhotonNetwork.PlayerList[0].NickName;
         Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
-    }  
+    }
+
+    // private void Update() {
+    //     int  playerCount = PhotonNetwork.PlayerList.Length;
+    //     if(playerCount < 2){
+    //         PhotonNetwork.LeaveRoom(true);
+    //         PhotonNetwork.LoadLevel("Home");
+    //     }
+    // }  
 }
