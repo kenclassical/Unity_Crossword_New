@@ -50,7 +50,7 @@ public class DeckChater : MonoBehaviour
             }
         }
     }
-    private void SelectStart(){
+    public void SelectStart(){
         var resultList = new List<string>();
         var sql = "SELECT English_word FROM vocabulary WHERE LENGTH(English_word) = 7;";
         using(var cmd = new MySqlCommand(sql, connection)){

@@ -70,16 +70,24 @@ public class Randomitem : MonoBehaviour
     }
 
     private void SelectRandom(){
+        bool hasWordPlaced = false;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 DorpTable dorpTable = wordCheckGrid.Grid[i,j];
                 if(dorpTable.HaveLetter){
                     HaveLetterVertical(j);
                     HaveLetterHorizontal(i);
+                    hasWordPlaced = true;
                 }
             }
         }
-        SelectRandomSQL();
+        if(hasWordPlaced){
+            Debug.Log("1");
+            SelectRandomSQL();   
+        }else{
+            Debug.Log("2");
+            deckChater.SelectStart();
+        }
     }
     
     private void HaveLetterVertical(int column){
