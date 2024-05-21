@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Text;
+using System.Text.RegularExpressions;
 
 public class Randomitem : MonoBehaviour
 {
@@ -131,42 +132,133 @@ public class Randomitem : MonoBehaviour
             string likeStart = "";
             string likeEnd = "";
             string modifiedWords = CreateWord(word, ref startLetter, ref endLetter);
-            Debug.Log(startLetter + "/" + endLetter);
             StringBuilder sqlBuilder = new StringBuilder("SELECT English_word FROM vocabulary WHERE ");
-            
-            if (startLetter == 0 && endLetter == 0)
-            {
-                continue;
-            }
 
-            for (int i = 0; i <= startLetter; i++){
-                if (i > 0){
-                    likeStart += "_";
-                }
-                for (int j = endLetter; j >= 0; j--){
-                    if (j > 0){
-                        likeEnd += "_";
-                        sqlBuilder.AppendFormat("English_word LIKE '{0}{1}{2}' OR ", likeStart, modifiedWords, likeEnd);
-                    } else if (i > 0 && j == 0){
-                        sqlBuilder.AppendFormat("English_word LIKE '{0}{1}' OR ", likeStart, modifiedWords);
+            if (CheckPattern_(modifiedWords)){
+                int startNumber = 0;
+                int endNumber = 0;
+
+                StringBuilder startWords = new StringBuilder();
+                StringBuilder endWords = new StringBuilder();
+
+                for (int i = 0; i < modifiedWords.Length - 2; i++)
+                {
+                    if (modifiedWords[i] == '_')
+                    {
+                        endNumber++;
+                    }
+                    else if (modifiedWords[i] == '/')
+                    {
+                        break;
                     }
                 }
-                likeEnd = "";
-            }
-            
-            string sql = sqlBuilder.ToString();
-            sql = sql.Substring(0, sql.Length - 4);
-            
-            using (var cmd = new MySqlCommand(sql, connection)){
-                using (var reader = cmd.ExecuteReader()){
-                    while (reader.Read()){
-                        string englishWord = reader.GetString(0);
-                        resultList.Add(englishWord);
+
+                for (int i = modifiedWords.Length - 1; i >= 2; i--)
+                {
+                    if (modifiedWords[i] == '_')
+                    {
+                        startNumber++;
+                    }
+                    else if (modifiedWords[i] == '/')
+                    {
+                        break;
                     }
                 }
+                startWords.Append(modifiedWords[0]);
+                endWords.Insert(0, modifiedWords[modifiedWords.Length - 1]);
+    
+                for(int i = 0; i <= startLetter;i++){
+                    if (i > 0){
+                       likeStart += "_"; 
+                    }
+                    for(int j = endNumber; j >= 0; j--){
+                       if (j > 0){
+                            likeEnd += "_";
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}{2}' OR ", likeStart, startWords, likeEnd);
+                        } 
+                    }
+                    likeEnd = "";
+                }
+                
+                likeStart = "";
+                for(int i = 0; i <= startNumber;i++){
+                    if (i > 0){
+                       likeStart += "_"; 
+                    }
+                    for(int j = endLetter; j >= 0; j--){
+                       if (j > 0){
+                            likeEnd += "_";
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}{2}' OR ", likeStart, endWords, likeEnd);
+                        } 
+                    }
+                    likeEnd = "";
+                }
+
+                likeStart = "";
+                for (int i = 0; i <= startLetter; i++){
+                    if (i > 0){
+                        likeStart += "_";
+                    }
+                    for (int j = endLetter; j >= 0; j--){
+                        if (j > 0){
+                            likeEnd += "_";
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}{2}' OR ", likeStart, modifiedWords, likeEnd);
+                        } else if (i > 0 && j == 0){
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}' OR ", likeStart, modifiedWords);
+                        }
+                    }
+                    likeEnd = "";
+                }
+
+                string sql = sqlBuilder.ToString();
+                sql = sql.Substring(0, sql.Length - 4);
+
+                if(sql != "SELECT English_word FROM vocabulary WH"){
+                    using (var cmd = new MySqlCommand(sql, connection)){
+                        using (var reader = cmd.ExecuteReader()){
+                            while (reader.Read()){
+                                string englishWord = reader.GetString(0);
+                                resultList.Add(englishWord);
+                            }
+                        }
+                    }
+                    wordsToRemove.Add(word);
+                }
+            }else{
+                if (startLetter == 0 && endLetter == 0)
+                {
+                    continue;
+                }
+                for (int i = 0; i <= startLetter; i++){
+                    if (i > 0){
+                        likeStart += "_";
+                    }
+                    for (int j = endLetter; j >= 0; j--){
+                        if (j > 0){
+                            likeEnd += "_";
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}{2}' OR ", likeStart, modifiedWords, likeEnd);
+                        } else if (i > 0 && j == 0){
+                            sqlBuilder.AppendFormat("English_word LIKE '{0}{1}' OR ", likeStart, modifiedWords);
+                        }
+                    }
+                    likeEnd = "";
+                }
+                
+                string sql = sqlBuilder.ToString();
+                sql = sql.Substring(0, sql.Length - 4);
+                
+                if(sql != "SELECT English_word FROM vocabulary WH"){
+                    using (var cmd = new MySqlCommand(sql, connection)){
+                        using (var reader = cmd.ExecuteReader()){
+                            while (reader.Read()){
+                                string englishWord = reader.GetString(0);
+                                resultList.Add(englishWord);
+                            }
+                        }
+                    }
+                    wordsToRemove.Add(word);
+                }
             }
-            Debug.Log(sql);
-            wordsToRemove.Add(word);
         }
 
         foreach (string wordToRemove in wordsToRemove){
@@ -216,6 +308,12 @@ public class Randomitem : MonoBehaviour
         }
 
         return stringBuilder.ToString();
+    }
+
+    private bool CheckPattern_(string input)
+    {
+        string pattern = @".{1,9}[_/]{1,9}.{1,9}";
+        return Regex.IsMatch(input, pattern);
     }
 }
 
