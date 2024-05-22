@@ -23,6 +23,8 @@ public class Randomitem : MonoBehaviour
 
     public List<string> resultList;
 
+    private DumbWod dumbWord;
+
     //SQL
     private MySqlConnection connection;
     private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
@@ -34,6 +36,7 @@ public class Randomitem : MonoBehaviour
         randomButton = GetComponent<Button>();
         deckChaterInstance = FindObjectOfType<DeckChater>();
         deckChater = FindObjectOfType<DeckChater>();
+        dumbWord = FindObjectOfType<DumbWod>();
         wordList = new List<string>();
         ColorAlpha50.a = 0.5f;
         ColorAlphaButton = new Color(255f/255f, 212f/255f, 103f/255f);
@@ -82,10 +85,8 @@ public class Randomitem : MonoBehaviour
             }
         }
         if(hasWordPlaced){
-            Debug.Log("1");
             SelectRandomSQL();   
         }else{
-            Debug.Log("2");
             deckChater.SelectStart();
         }
     }
@@ -133,6 +134,7 @@ public class Randomitem : MonoBehaviour
     private void SelectRandomSQL(){
         resultList = new List<string>();
         List<string> wordsToRemove = new List<string>();
+        dumbWord.AllWordRandom = new List<string>();
         foreach (string word in wordList)
         {
             int startLetter = 0;
@@ -227,6 +229,7 @@ public class Randomitem : MonoBehaviour
                             while (reader.Read()){
                                 string englishWord = reader.GetString(0);
                                 resultList.Add(englishWord);
+                                dumbWord.AllWordRandom.Add(englishWord.ToLower());
                             }
                         }
                     }
@@ -261,6 +264,7 @@ public class Randomitem : MonoBehaviour
                             while (reader.Read()){
                                 string englishWord = reader.GetString(0);
                                 resultList.Add(englishWord);
+                                dumbWord.AllWordRandom.Add(englishWord.ToLower());
                             }
                         }
                     }
@@ -273,6 +277,7 @@ public class Randomitem : MonoBehaviour
             wordList.Remove(wordToRemove);
         }
         deckChater.RandomStart(resultList);
+        
     }
 
     private string CreateWord(string word,ref int startLetter,ref int endLetter){

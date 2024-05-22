@@ -15,11 +15,14 @@ public class DeckChater : MonoBehaviour
     public GameObject CradToHand;
     public List<string> Letter = new List<string>();
 
+    private DumbWod dumbWord;
+
     //SQL
     private MySqlConnection connection;
     private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
     void Start()
     {
+        dumbWord = FindAnyObjectByType<DumbWod>();
         connection = new MySqlConnection(connectionString);
         connection.Open();
         decksizenum = 26;
@@ -93,6 +96,7 @@ public class DeckChater : MonoBehaviour
         foreach (string word in selectedWords)
         {
             Debug.Log(word);
+            dumbWord.Words.Add(word);
             foreach (char letter in word)
             {
                 Letter.Add(letter.ToString());

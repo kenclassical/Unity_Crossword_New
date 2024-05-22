@@ -12,7 +12,7 @@ public class EndTurn : MonoBehaviour{
     public GameObject Hand;
     public TMP_Text nameTurn;
     public int currentPlayerIndex = 0;
-    private float TurnGame = 1.0f;
+    public float TurnGame = 1.0f;
     private PhotonView PV;
     private Randomitem RandomCheck;
     private WordCheckGrid wordCheckGrid;
@@ -25,12 +25,15 @@ public class EndTurn : MonoBehaviour{
     public GameObject AreaGame;
     public GameObject AreaEndGame;
 
+    private DumbWod dumbWord;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
         RandomCheck = FindObjectOfType<Randomitem>();
         wordCheckGrid = FindObjectOfType<WordCheckGrid>();
         endGame = FindObjectOfType<EndGame>();
+        dumbWord = FindObjectOfType<DumbWod>();
     }
     void Start(){
         AllShowWord = new List<string>();
@@ -86,6 +89,10 @@ public class EndTurn : MonoBehaviour{
         }else{
             Turn = Mathf.CeilToInt(TurnGame / 2);
             RandomCheck.buttonCheck = true;
+            if(!dumbWord.OnAndOff){
+                dumbWord.Del();
+                dumbWord.OnAndOff = true;
+            }
             RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
             RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
             currentPlayerIndex = index;

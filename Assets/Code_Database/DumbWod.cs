@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MySql.Data.MySqlClient;
+using TMPro;
 using UnityEngine;
 
 public class DumbWod : MonoBehaviour
@@ -8,62 +11,116 @@ public class DumbWod : MonoBehaviour
     public GameObject DumbWodPrefab;
     public GameObject DumbWordButton;
     public GameObject Hand;
-    public List<string> HandLetter;
-    public List<string> GridLetter;
+    public GameObject DumbWordShowAll;
+    public GameObject TextVocabulary;
+
+    private WordCheckGrid wordCheckGrid;
+    private EndTurn endTurn;
+
+    public List<string> dumbWordShow;
+    public List<string> Words;
+    private List<string> AllWord;
+    public string letter;
+
+    public List<string> AllWordRandom;
+
+    public bool OnAndOff = true;
 
     //SQL
     private MySqlConnection connection;
     private string connectionString;
     void Awake()
     {
-        HandLetter = new List<string>();
-        GridLetter = new List<string>();
+        dumbWordShow = new List<string>();
+        AllWord = new List<string>();
+        AllWordRandom = new List<string>();
+        wordCheckGrid = FindAnyObjectByType<WordCheckGrid>();
+        endTurn = FindAnyObjectByType<EndTurn>();
         connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
         connection = new MySqlConnection(connectionString);
         connection.Open();
     }
     public void OnDumb(){
-        foreach(Transform child in Hand.transform){
-            HandLetter.Add(child.GetComponent<charimage>().charatletter);
+        if(OnAndOff){
+            foreach (Transform child in Hand.transform)
+            {
+                string charatletter = child.GetComponent<charimage>().charatletter;
+                letter += charatletter;
+            }
+            CheckedWord(letter.ToLower());
+            foreach(string word in dumbWordShow){
+                GameObject M = Instantiate(TextVocabulary,DumbWordShowAll.transform);
+                TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
+                vocabularyText.text = word;
+            }
+            OnAndOff = false;
         }
-        GridLetter = Select();
         DumbWodPrefab.SetActive(true);
         DumbWordButton.SetActive(false);
     }
 
     public void OffDumb(){
-        HandLetter.Clear();
         DumbWodPrefab.SetActive(false);
         DumbWordButton.SetActive(true);
     }
 
-    private List<string> Select(){
-        List<string> WordAll = new List<string>();
-        string sqlQuery = "SELECT * FROM vocabulary WHERE ";
-        foreach (string letter in HandLetter)
-        {
-            sqlQuery += "English_word LIKE '%" + letter + "%' AND ";
-            Debug.Log(sqlQuery);
+    public void Del(){
+        foreach(Transform child in DumbWordShowAll.transform){
+            Destroy(child.gameObject);
         }
-        // ตรวจสอบว่ามีตัวเชื่อม "AND " อยู่ด้านท้ายของคำสั่ง SQL หรือไม่
-        if (HandLetter.Count > 0)
-        {
-            sqlQuery = sqlQuery.Remove(sqlQuery.Length - 5);
-            Debug.Log("2");
-        }
-
-        using (var command = new MySqlCommand(sqlQuery, connection))
-        {   
-            var reader = command.ExecuteReader();
-            while (reader.Read()){
-                string word = reader["English_word"].ToString();
-                WordAll.Add(word);
-                Debug.Log("1");
-            }
-            reader.Close();
-        }
-        return WordAll;
+        letter = "";
+        dumbWordShow = new List<string>();
     }
 
+    private List<string> SelectAll(){
+        var resultList = new List<string>();
+        var sql = "SELECT English_word FROM vocabulary WHERE LENGTH(English_word) <= 7 AND LENGTH(English_word) > 1;";
+        using(var cmd = new MySqlCommand(sql, connection)){
+            using (var reader = cmd.ExecuteReader()){
+                while (reader.Read()){
+                    string englishWord = reader.GetString(0);
+                    resultList.Add(englishWord.ToLower());
+                }
+            }
+        }
+        return resultList;
+    }
 
+    private void CheckedWord(string lettersToCheck){
+         if (endTurn.TurnGame == 1)
+        {
+            AllWord = SelectAll();
+
+            HashSet<string> matchingWords = new HashSet<string>(AllWord.Where(word => CanFormWord(lettersToCheck, word.ToLower())));
+
+            foreach (string word in matchingWords)
+            {
+                dumbWordShow.Add(word);
+            }
+        }
+        else
+        {
+            HashSet<string> matchingWords = new HashSet<string>(AllWordRandom.Where(word => CanFormWord(lettersToCheck, word.ToLower())));
+
+            foreach (string word in matchingWords)
+            {
+                dumbWordShow.Add(word);
+            }
+        }
+    }
+
+    private static bool CanFormWord(string lettersToCheck, string word)
+    {
+        Dictionary<char, int> letterCount = lettersToCheck.GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
+
+        foreach (char c in word)
+        {
+            if (!letterCount.ContainsKey(c) || letterCount[c] == 0)
+            {
+                return false;
+            }
+            letterCount[c]--;
+        }
+        return true;
+    }
 }
