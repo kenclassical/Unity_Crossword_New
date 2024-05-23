@@ -67,7 +67,7 @@ public class WordCheckGrid : MonoBehaviour
     }
     void Start()
     {
-        connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+        connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
         connection = new MySqlConnection(connectionString);
         connection.Open();
         CurrentTiles = new List<DorpTable>();

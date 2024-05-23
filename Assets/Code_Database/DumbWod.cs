@@ -36,7 +36,7 @@ public class DumbWod : MonoBehaviour
         AllWordRandom = new List<string>();
         wordCheckGrid = FindAnyObjectByType<WordCheckGrid>();
         endTurn = FindAnyObjectByType<EndTurn>();
-        connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+        connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
         connection = new MySqlConnection(connectionString);
         connection.Open();
     }

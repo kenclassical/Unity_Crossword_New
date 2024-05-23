@@ -21,11 +21,11 @@ public class GamePlay : MonoBehaviourPun
         Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
     }
 
-    // private void Update() {
-    //     int  playerCount = PhotonNetwork.PlayerList.Length;
-    //     if(playerCount < 2){
-    //         PhotonNetwork.LeaveRoom(true);
-    //         PhotonNetwork.LoadLevel("Home");
-    //     }
-    // }  
+    private void Update() {
+        int  playerCount = PhotonNetwork.PlayerList.Length;
+        if(playerCount < 2){
+            PhotonNetwork.LeaveRoom(true);
+            PhotonNetwork.LoadLevel("Home");
+        }
+    }  
 }

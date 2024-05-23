@@ -587,6 +587,7 @@ MonoBehaviour:
   Hand: {fileID: 1408667886}
   nameTurn: {fileID: 1293598603}
   currentPlayerIndex: 0
+  TurnGame: 1
   ShowWordTurn: {fileID: 213856320}
   AllShowWord: []
   Turn: 0
@@ -2586,7 +2587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5356,9 +5357,11 @@ MonoBehaviour:
   Hand: {fileID: 1408667886}
   DumbWordShowAll: {fileID: 886731942}
   TextVocabulary: {fileID: 8556428894141493971, guid: 0608becf6b012a547ad3bbab5ed3667c, type: 3}
-  HandLetter: []
-  GridLetter: []
   dumbWordShow: []
+  Words: []
+  letter: 
+  AllWordRandom: []
+  OnAndOff: 1
 --- !u!1 &2069878501
 GameObject:
   m_ObjectHideFlags: 0

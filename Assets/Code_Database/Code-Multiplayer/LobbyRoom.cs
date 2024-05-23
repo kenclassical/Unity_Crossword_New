@@ -11,7 +11,7 @@ public class LobbyRoom : MonoBehaviour
         if (PhotonNetwork.CurrentRoom != null)
         {
             int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            if (playerCount == 1)
+            if (playerCount == 2)
             {
                 // ถ้ามีผู้เล่นอย่างน้อย 2 คนในห้อง
                 lobbyStatusText.text = "Game is starting...";

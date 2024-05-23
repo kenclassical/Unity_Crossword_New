@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class EditData : MonoBehaviour
 {
    private MySqlConnection connection;
-    private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
     public TMP_InputField Username_Edit;
     public TMP_InputField Password_Edit;
     public TMP_InputField Email_Edit;
