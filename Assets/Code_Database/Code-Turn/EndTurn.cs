@@ -3,14 +3,16 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class EndTurn : MonoBehaviour{
     public GameObject buttonEnd;
     public GameObject buttonRandom;
     public GameObject buttonCancel;
+    public GameObject Hand;
     public TMP_Text nameTurn;
     public int currentPlayerIndex = 0;
-    private float TurnGame = 1.0f;
+    public float TurnGame = 1.0f;
     private PhotonView PV;
     private Randomitem RandomCheck;
     private WordCheckGrid wordCheckGrid;
@@ -23,16 +25,19 @@ public class EndTurn : MonoBehaviour{
     public GameObject AreaGame;
     public GameObject AreaEndGame;
 
+    private DumbWod dumbWord;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
         RandomCheck = FindObjectOfType<Randomitem>();
         wordCheckGrid = FindObjectOfType<WordCheckGrid>();
         endGame = FindObjectOfType<EndGame>();
+        dumbWord = FindObjectOfType<DumbWod>();
     }
     void Start(){
         AllShowWord = new List<string>();
-        nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Mathf.RoundToInt(TurnGame);
+        nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Mathf.RoundToInt(TurnGame) + "/5";
 
         buttonEnd.SetActive(false);
         buttonRandom.SetActive(false);
@@ -46,25 +51,31 @@ public class EndTurn : MonoBehaviour{
 
     private void StartTurnPlayer(){
         if (PhotonNetwork.PlayerList[currentPlayerIndex].IsLocal){
+            foreach(Transform child in Hand.transform){
+                child.GetComponent<Image>().raycastTarget = true;
+            }
             buttonEnd.SetActive(true);
             buttonRandom.SetActive(true);
         } else {
+            foreach(Transform child in Hand.transform){
+                child.GetComponent<Image>().raycastTarget = false;
+            }
             buttonEnd.SetActive(false);
             buttonRandom.SetActive(false);
         }
     }
 
-    public void EndTurnPlayer(){
+    public void EndTurnPlayer(string ShowWord){
         currentPlayerIndex++;
         if (currentPlayerIndex >= PhotonNetwork.PlayerList.Length)
         {
             currentPlayerIndex = 0;
         }
-        PV.RPC("DelayStartTurn", RpcTarget.AllBuffered,currentPlayerIndex);
+        PV.RPC("DelayStartTurn", RpcTarget.AllBuffered,currentPlayerIndex,ShowWord);
     }
 
     [PunRPC]
-    private IEnumerator DelayStartTurn(int index)
+    private IEnumerator DelayStartTurn(int index,string ShowWord)
     {
         TurnGame++;
         if(TurnGame > 10){
@@ -78,13 +89,17 @@ public class EndTurn : MonoBehaviour{
         }else{
             Turn = Mathf.CeilToInt(TurnGame / 2);
             RandomCheck.buttonCheck = true;
+            if(!dumbWord.OnAndOff){
+                dumbWord.Del();
+                dumbWord.OnAndOff = true;
+            }
             RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
             RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
             currentPlayerIndex = index;
             nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Turn + "/5";
-            if(wordCheckGrid.ShowWord != ""){
-                ShowWordTurn.text = wordCheckGrid.ShowWord;
-                AllShowWord.Add(wordCheckGrid.ShowWord);
+            if(ShowWord != ""){
+                ShowWordTurn.text = ShowWord;
+                AllShowWord.Add(ShowWord);
             }
             StartTurnPlayer();
         }

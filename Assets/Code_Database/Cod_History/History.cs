@@ -11,10 +11,13 @@ public class History : MonoBehaviour
     public GameObject ShowArea;
     public GameObject Area;
     string loggedInUsername;
+    public GameObject ShowWordHistory;
+    public GameObject AreaText;
+    public GameObject TextVocabulary;
 
     //SQL
     private MySqlConnection connection;
-    private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
     void Awake()
     {
         loggedInUsername = PlayerPrefs.GetString("LoggedInUsername", "Guest");
@@ -43,7 +46,7 @@ public class History : MonoBehaviour
                         string p2 = reader.GetString("NameTwo");
                         string s2 = reader.GetString("ScoreTwo");
                         string sum = reader.GetString("Sum");
-                        ShowAllHistory(p1, p2, s1, s2, sum);
+                        ShowAllHistory(p1, p2, s1, s2, sum,Num);
                     }
                 }
             }
@@ -70,18 +73,29 @@ public class History : MonoBehaviour
         return num;
     }
 
-    private void ShowAllHistory(string Player1, string Player2, string Score1, string Score2,string SumAll){
+    private void ShowAllHistory(string Player1, string Player2, string Score1, string Score2,string SumAll,int Num){
         GameObject S = Instantiate(ShowArea,Area.transform);
         TMP_Text p1Text = S.transform.Find("P1").GetComponent<TMP_Text>();
         TMP_Text p2Text = S.transform.Find("P2").GetComponent<TMP_Text>();
         TMP_Text s1Text = S.transform.Find("S1").GetComponent<TMP_Text>();
         TMP_Text s2Text = S.transform.Find("S2").GetComponent<TMP_Text>();
         TMP_Text sumText = S.transform.Find("SUM").GetComponent<TMP_Text>();
+        TMP_Text NumText = S.transform.Find("Num").GetComponent<TMP_Text>();
 
         p1Text.text = Player1;
         p2Text.text = Player2;
         s1Text.text = Score1;
         s2Text.text = Score2;
         sumText.text = SumAll;
+        NumText.text = Num.ToString();
+        NumText.enabled = false;
     }
+
+    public void CancelShow(){
+        foreach(Transform child in AreaText.transform){
+            Destroy(child.gameObject);
+        }
+        ShowWordHistory.SetActive(false);
+    }
+
 }

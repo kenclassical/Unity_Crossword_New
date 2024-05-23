@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scrcen/Home.unity
-    guid: 49472b9f7b5483e438e4c1147e603885
-  - enabled: 1
     path: Assets/Scrcen/login.unity
     guid: 97046380abd82a248911614ed904b246
+  - enabled: 1
+    path: Assets/Scrcen/Home.unity
+    guid: 49472b9f7b5483e438e4c1147e603885
   - enabled: 1
     path: Assets/Scrcen/Register.unity
     guid: 4b1ba83d34669b240ae2bea89012309f

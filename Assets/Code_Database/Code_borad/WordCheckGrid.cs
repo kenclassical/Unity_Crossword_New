@@ -67,7 +67,7 @@ public class WordCheckGrid : MonoBehaviour
     }
     void Start()
     {
-        connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+        connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
         connection = new MySqlConnection(connectionString);
         connection.Open();
         CurrentTiles = new List<DorpTable>();
@@ -171,7 +171,7 @@ public class WordCheckGrid : MonoBehaviour
                     }
                     var points = Points();
                     PV.RPC("PointsOnline",RpcTarget.AllBuffered,points,endTurn.currentPlayerIndex);
-                    endTurn.EndTurnPlayer();
+                    endTurn.EndTurnPlayer(ShowWord);
                 }
             }else{
                 Debug.Log("false");
@@ -179,7 +179,7 @@ public class WordCheckGrid : MonoBehaviour
         }else{
             TableGrid = Table.None;
             ShowWord = "";
-            endTurn.EndTurnPlayer();
+            endTurn.EndTurnPlayer(ShowWord);
         }
     }
 
@@ -456,5 +456,25 @@ public class WordCheckGrid : MonoBehaviour
         tile.Points = Points;
         tile.HasLetter = true;
         tile.HaveLetter = true;
+    }
+
+    public void BackToHand(){
+        for (int i = 0; i < NumberOfRows; i++)
+        {
+            for (int j = 0; j < NumberOfColumns; j++)
+            {
+                DorpTable tile = Grid[i, j];
+                if (tile.transform.childCount > 0)
+                {
+                    GameObject draggedObject = tile.transform.GetChild(0).gameObject;
+                    draggedObject.transform.SetParent(Hand.transform);
+                    tile.HasLetter = false;
+                    tile.CurrentLetter = "";
+                    tile.Points = 0;
+                    tile.CharImageGrid = null;
+                }
+            }
+        }
+        CurrentTiles.Clear();
     }
 }

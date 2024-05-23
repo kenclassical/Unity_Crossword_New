@@ -3,7 +3,6 @@ using Photon.Pun;
 using TMPro;
 using MySql.Data.MySqlClient;
 using UnityEngine.UI;
-using UnityEditor.VersionControl;
 using System;
 
 public class EndGame : MonoBehaviour
@@ -20,10 +19,11 @@ public class EndGame : MonoBehaviour
     public GameObject AreaText;
     private int Num;
     private EndTurn endTurn;
+    string loggedInUsername;
 
     //SQL
     private MySqlConnection connection;
-    private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
 
     void Awake()
     {
@@ -34,6 +34,7 @@ public class EndGame : MonoBehaviour
 
     void Start()
     {
+        loggedInUsername = PlayerPrefs.GetString("LoggedInUsername", "Guest");
         Num = 1;     
     }
 
@@ -46,7 +47,13 @@ public class EndGame : MonoBehaviour
 
     public void ShowEndGame(){
         Playone.text = PhotonNetwork.PlayerList[0].NickName;
-        Playtwo.text = "";
+        Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
+        foreach(string word in endTurn.AllShowWord)
+        {
+            GameObject M = Instantiate(TextVocabulary,AreaText.transform);
+            TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
+            vocabularyText.text = word;
+        }
         if (scorePlayerOne > scorePlayerTwo){
             Sum.text = "PLAYER: " + Playone.text + " WIN";
         }else if (scorePlayerOne < scorePlayerTwo){
@@ -54,22 +61,15 @@ public class EndGame : MonoBehaviour
         }else if (scorePlayerOne == scorePlayerTwo){
             Sum.text = "DRAW";  
         }
-        AddSQL();
     }
 
     public void ShowVocabulary(){
         AreaShow.SetActive(true);
-        foreach(string word in endTurn.AllShowWord)
-        {
-            GameObject M = Instantiate(TextVocabulary,AreaText.transform);
-            TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
-            vocabularyText.text = word;
-        }
     }
 
     private void AddSQL(){
         Num = GetNextAvailableNum();
-        var query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word)";
+        var query = "INSERT INTO `history`(`NameOne`, `NameTwo`, `ScoreOne`, `ScoreTwo`, `Num`, `Sum`, `Word`,`username`) VALUES (@Playone,@Playtwo,@scorePlayerOne,@scorePlayerTwo,@Num,@Sum,@Word,@loggedInUsername)";
         foreach (string word in endTurn.AllShowWord)
         {
             MySqlCommand innerCmd = new MySqlCommand(query, connection);
@@ -80,6 +80,7 @@ public class EndGame : MonoBehaviour
             innerCmd.Parameters.AddWithValue("@Num", Num);
             innerCmd.Parameters.AddWithValue("@Sum", Sum.text);
             innerCmd.Parameters.AddWithValue("@Word", word);
+            innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
             innerCmd.ExecuteNonQuery();
         }
     }
@@ -87,29 +88,31 @@ public class EndGame : MonoBehaviour
     private int GetNextAvailableNum()
     {
         int num = 1;
-        int checkNum = 0;
         
-        var query = "SELECT Num FROM history WHERE Num = @Num";
-        
-        using (MySqlCommand cmd = new MySqlCommand(query, connection))
+        while (true)
         {
-            cmd.Parameters.AddWithValue("@Num", num);
+            var query = "SELECT COUNT(*) FROM history WHERE Num = @Num AND username = @loggedInUsername";
             
-            using (MySqlDataReader reader = cmd.ExecuteReader())
+            using (MySqlCommand innerCmd = new MySqlCommand(query, connection))
             {
-                if (reader.Read())
+                innerCmd.Parameters.AddWithValue("@Num", num);
+                innerCmd.Parameters.AddWithValue("@loggedInUsername", loggedInUsername);
+                
+                int count = Convert.ToInt32(innerCmd.ExecuteScalar());
+                
+                if (count == 0)
                 {
-                    checkNum = reader.GetInt32(0);
+                    return num;
                 }
+                
+                num++;
             }
-            
-            num += checkNum;
         }
-        
-        return num;
     }
 
+
     public void ExitGame(){
+        AddSQL();
         PhotonNetwork.LeaveRoom(true);
         PhotonNetwork.LoadLevel("Home");
     }
