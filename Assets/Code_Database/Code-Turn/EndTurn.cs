@@ -9,6 +9,7 @@ public class EndTurn : MonoBehaviour{
     public GameObject buttonEnd;
     public GameObject buttonRandom;
     public GameObject buttonCancel;
+    public GameObject buttonDumbWord;
     public GameObject Hand;
     public TMP_Text nameTurn;
     public int currentPlayerIndex = 0;
@@ -42,6 +43,7 @@ public class EndTurn : MonoBehaviour{
         buttonEnd.SetActive(false);
         buttonRandom.SetActive(false);
         buttonCancel.SetActive(false);
+        buttonDumbWord.SetActive(false);
 
         if(PhotonNetwork.IsMasterClient){
             buttonCancel.SetActive(false);
@@ -56,12 +58,14 @@ public class EndTurn : MonoBehaviour{
             }
             buttonEnd.SetActive(true);
             buttonRandom.SetActive(true);
+            buttonDumbWord.SetActive(true);
         } else {
             foreach(Transform child in Hand.transform){
                 child.GetComponent<Image>().raycastTarget = false;
             }
             buttonEnd.SetActive(false);
             buttonRandom.SetActive(false);
+            buttonDumbWord.SetActive(false);
         }
     }
 
@@ -91,7 +95,7 @@ public class EndTurn : MonoBehaviour{
             RandomCheck.buttonCheck = true;
             if(!dumbWord.OnAndOff){
                 dumbWord.Del();
-                dumbWord.OnAndOff = true;
+                Debug.Log(dumbWord.OnAndOff);
             }
             RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
             RandomCheck.textButton.color = RandomCheck.ColorAlphaText;

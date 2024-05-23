@@ -96,7 +96,6 @@ public class DeckChater : MonoBehaviour
         foreach (string word in selectedWords)
         {
             Debug.Log(word);
-            dumbWord.Words.Add(word);
             foreach (char letter in word)
             {
                 Letter.Add(letter.ToString());

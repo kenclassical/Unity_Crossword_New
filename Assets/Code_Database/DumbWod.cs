@@ -18,7 +18,6 @@ public class DumbWod : MonoBehaviour
     private EndTurn endTurn;
 
     public List<string> dumbWordShow;
-    public List<string> Words;
     private List<string> AllWord;
     public string letter;
 
@@ -41,7 +40,7 @@ public class DumbWod : MonoBehaviour
         connection.Open();
     }
     public void OnDumb(){
-        if(OnAndOff){
+        if(OnAndOff == true){
             foreach (Transform child in Hand.transform)
             {
                 string charatletter = child.GetComponent<charimage>().charatletter;
@@ -54,6 +53,7 @@ public class DumbWod : MonoBehaviour
                 vocabularyText.text = word;
             }
             OnAndOff = false;
+            Debug.Log(OnAndOff);
         }
         DumbWodPrefab.SetActive(true);
         DumbWordButton.SetActive(false);
@@ -70,6 +70,7 @@ public class DumbWod : MonoBehaviour
         }
         letter = "";
         dumbWordShow = new List<string>();
+        OnAndOff = true;
     }
 
     private List<string> SelectAll(){
@@ -87,8 +88,9 @@ public class DumbWod : MonoBehaviour
     }
 
     private void CheckedWord(string lettersToCheck){
-         if (endTurn.TurnGame == 1)
+        if (AllWordRandom.Count == 0)
         {
+            Debug.Log("1");
             AllWord = SelectAll();
 
             HashSet<string> matchingWords = new HashSet<string>(AllWord.Where(word => CanFormWord(lettersToCheck, word.ToLower())));

@@ -69,6 +69,9 @@ public class Randomitem : MonoBehaviour
             {
                 Instantiate(deckChaterInstance.CradToHand, Hand.transform.position, Hand.transform.rotation, Hand.transform);
             }
+            if(!dumbWord.OnAndOff){
+                dumbWord.Del();
+            }
         }
     }
 
