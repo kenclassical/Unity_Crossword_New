@@ -69,6 +69,9 @@ public class Randomitem : MonoBehaviour
             {
                 Instantiate(deckChaterInstance.CradToHand, Hand.transform.position, Hand.transform.rotation, Hand.transform);
             }
+            foreach(Transform child in Hand.transform){
+                child.GetComponent<Image>().raycastTarget = true;
+            }
             if(!dumbWord.OnAndOff){
                 dumbWord.Del();
             }

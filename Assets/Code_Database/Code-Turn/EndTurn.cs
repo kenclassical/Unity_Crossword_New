@@ -95,7 +95,6 @@ public class EndTurn : MonoBehaviour{
             RandomCheck.buttonCheck = true;
             if(!dumbWord.OnAndOff){
                 dumbWord.Del();
-                Debug.Log(dumbWord.OnAndOff);
             }
             RandomCheck.randomButton.image.color = RandomCheck.ColorAlphaButton;
             RandomCheck.textButton.color = RandomCheck.ColorAlphaText;
