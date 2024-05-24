@@ -17,7 +17,7 @@ public class History : MonoBehaviour
 
     //SQL
     private MySqlConnection connection;
-    private string connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
     void Awake()
     {
         loggedInUsername = PlayerPrefs.GetString("LoggedInUsername", "Guest");
