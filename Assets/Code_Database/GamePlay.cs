@@ -9,6 +9,7 @@ public class GamePlay : MonoBehaviourPun
     public TMP_Text Playone;
     public TMP_Text Playtwo;
     public GameObject Showleave;
+    public GameObject EndGame;
     private bool isLeaving = false;
     private void Awake()
     {
@@ -28,7 +29,7 @@ public class GamePlay : MonoBehaviourPun
 
     private void Update() {
         int playerCount = PhotonNetwork.PlayerList.Length;
-        if (playerCount < 2 && !isLeaving) {
+        if (playerCount < 2 && !isLeaving && !EndGame.activeSelf) {
             StartCoroutine(LeaveRoomProcess());
         }
     }

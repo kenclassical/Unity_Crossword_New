@@ -6027,3 +6027,4 @@ MonoBehaviour:
   Playone: {fileID: 283365905}
   Playtwo: {fileID: 1091993877}
   Showleave: {fileID: 74497579}
+  EndGame: {fileID: 1791989785}
