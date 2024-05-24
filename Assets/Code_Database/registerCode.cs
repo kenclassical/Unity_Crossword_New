@@ -10,7 +10,7 @@ public class registerCode : MonoBehaviour
     public TMP_InputField Email_Register;
     public TMP_Text verify_Register;
     private MySqlConnection connection;
-    private string connectionString = "Server=192.168.1.163;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
 
     public void ButtonClicked(){
         connection = new MySqlConnection(connectionString);
