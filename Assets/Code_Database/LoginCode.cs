@@ -10,7 +10,9 @@ public class LoginCode : MonoBehaviour
     public TMP_Text Verify_Login;
     
     private MySqlConnection connection;
-    private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+    // private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+
    public void ButtonClickedLogin(){
         connection = new MySqlConnection(connectionString);
         connection.Open();

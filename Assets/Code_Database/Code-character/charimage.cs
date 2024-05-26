@@ -11,6 +11,7 @@ public class charimage : MonoBehaviourPunCallbacks
     public string charatletter;
     public Sprite charImage;
     public int scorecharat;
+    public Sprite charImageDrop;
 
     public Image charter;
 

@@ -35,7 +35,9 @@ public class DumbWod : MonoBehaviour
         AllWordRandom = new List<string>();
         wordCheckGrid = FindAnyObjectByType<WordCheckGrid>();
         endTurn = FindAnyObjectByType<EndTurn>();
-        connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+        // connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+        connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+
         connection = new MySqlConnection(connectionString);
         connection.Open();
     }
@@ -53,7 +55,6 @@ public class DumbWod : MonoBehaviour
                 vocabularyText.text = word;
             }
             OnAndOff = false;
-            Debug.Log(OnAndOff);
         }
         DumbWodPrefab.SetActive(true);
         DumbWordButton.SetActive(false);
@@ -90,7 +91,6 @@ public class DumbWod : MonoBehaviour
     private void CheckedWord(string lettersToCheck){
         if (AllWordRandom.Count == 0)
         {
-            Debug.Log("1");
             AllWord = SelectAll();
 
             HashSet<string> matchingWords = new HashSet<string>(AllWord.Where(word => CanFormWord(lettersToCheck, word.ToLower())));

@@ -4013,7 +4013,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -270, y: 952.19995}
-  m_SizeDelta: {x: 231.5815, y: 90.1946}
+  m_SizeDelta: {x: 387, y: 90.1946}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1396703621
 MonoBehaviour:
@@ -4622,7 +4622,6 @@ MonoBehaviour:
   ShowWord: 
   ScorePlayer1: {fileID: 1396703621}
   ScorePlayer2: {fileID: 1712319972}
-  numPlayer1: 0
   Hand: {fileID: 1408667886}
   StandardImage: {fileID: 21300000, guid: a27e8627e0f47874298867f5454029a5, type: 3}
   StarStart: {fileID: 21300000, guid: bc97bbd9e12c4ec41b32a7866b27230e, type: 3}
@@ -4635,6 +4634,7 @@ MonoBehaviour:
   FieldUIGrid: {fileID: 1286091697}
   TableD: {fileID: 9160653867521600366, guid: bf87b9e4a603771488d9b3626dd603c1, type: 3}
   CurrentTiles: []
+  pointsShow: 0
 --- !u!114 &1604075305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5037,7 +5037,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 270, y: 952.19995}
-  m_SizeDelta: {x: 231.5815, y: 90.1946}
+  m_SizeDelta: {x: 387, y: 90.1946}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1712319972
 MonoBehaviour:
@@ -6026,5 +6026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Playone: {fileID: 283365905}
   Playtwo: {fileID: 1091993877}
+  Sone: {fileID: 1396703621}
+  Stwo: {fileID: 1712319972}
   Showleave: {fileID: 74497579}
   EndGame: {fileID: 1791989785}
