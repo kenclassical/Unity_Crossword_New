@@ -211,7 +211,6 @@ public class WordCheckGrid : MonoBehaviour
                 currentText = currentText.Substring(0, index).Trim();
             }
             ScorePlayer1.text = currentText;
-            Debug.Log(currentText);
         } else {
             string currentText = ScorePlayer2.text;
             
@@ -229,7 +228,6 @@ public class WordCheckGrid : MonoBehaviour
         var words = CreateWords();
         _wordsFound = words;
         var word = GetWord(words[0], words[1]);
-        Debug.Log(word);
         if (_WordTiles.Count != 0)
         {
             var index1 = word.IndexOf('_');
@@ -444,7 +442,6 @@ public class WordCheckGrid : MonoBehaviour
     public int Points(){
         var result = 0;
         var wordAllMultiplier = 1;
-        Debug.Log("1");
         for (int i = 0; i < _wordsFound.Count - 1; i++){
             var num = 0;
             if(_wordsFound[i].Row == _wordsFound[i+1].Row){

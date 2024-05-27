@@ -60,6 +60,14 @@ public class EndGame : MonoBehaviour
                 Playone.text = player.NickName;
             }
         }
+        foreach(string num in endTurn.AllShowWordPlayer1){
+            endTurn.AllShowWord.Add(num);
+        }
+        string commit = "--------------------------------";
+        endTurn.AllShowWord.Add(commit);
+        foreach(string num in endTurn.AllShowWordPlayer2){
+            endTurn.AllShowWord.Add(num);
+        }
         if(PhotonNetwork.IsMasterClient){
             ScorePlayerOneText.rectTransform.anchoredPosition = new Vector2(-340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);
             ScorePlayerTwoText.rectTransform.anchoredPosition = new Vector2(340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);

@@ -13,8 +13,10 @@ public class GamePlay : MonoBehaviourPun
     public GameObject Showleave;
     public GameObject EndGame;
     private bool isLeaving = false;
+    private EndTurn endTurn;
     private void Awake()
     {
+        endTurn = FindObjectOfType<EndTurn>();
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (!player.IsLocal)
@@ -26,6 +28,8 @@ public class GamePlay : MonoBehaviourPun
                 Playone.text = player.NickName;
             }
         }
+        endTurn.AllShowWordPlayer1.Add("Player 1:" + Playone.text);
+        endTurn.AllShowWordPlayer2.Add("Player 2:" + Playtwo.text);
         if(PhotonNetwork.IsMasterClient){
             Sone.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
             Stwo.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
@@ -33,33 +37,31 @@ public class GamePlay : MonoBehaviourPun
             Sone.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
             Stwo.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
         }
-        // Playone.text = PhotonNetwork.PlayerList[0].NickName;
-        // Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
     }
 
-    // private void Update() {
-    //     int playerCount = PhotonNetwork.PlayerList.Length;
-    //     if (playerCount < 2 && !isLeaving && !EndGame.activeSelf) {
-    //         StartCoroutine(LeaveRoomProcess());
-    //     }
-    // }
+    private void Update() {
+        int playerCount = PhotonNetwork.PlayerList.Length;
+        if (playerCount < 2 && !isLeaving && !EndGame.activeSelf) {
+            StartCoroutine(LeaveRoomProcess());
+        }
+    }
 
-    // private IEnumerator LeaveRoomProcess() {
-    //     isLeaving = true;
+    private IEnumerator LeaveRoomProcess() {
+        isLeaving = true;
 
-    //     if (PhotonNetwork.InRoom && PhotonNetwork.NetworkClientState == ClientState.Joined) {
-    //         PhotonNetwork.LeaveRoom(true);
+        if (PhotonNetwork.InRoom && PhotonNetwork.NetworkClientState == ClientState.Joined) {
+            PhotonNetwork.LeaveRoom(true);
 
-    //         while (PhotonNetwork.InRoom || PhotonNetwork.NetworkClientState == ClientState.Leaving) {
-    //             yield return null;
-    //         }
+            while (PhotonNetwork.InRoom || PhotonNetwork.NetworkClientState == ClientState.Leaving) {
+                yield return null;
+            }
 
-    //         Showleave.SetActive(true);
-    //         yield return new WaitForSeconds(5);
+            Showleave.SetActive(true);
+            yield return new WaitForSeconds(5);
 
-    //         PhotonNetwork.LoadLevel("Home");
-    //     }
+            PhotonNetwork.LoadLevel("Home");
+        }
 
-    //     isLeaving = false;
-    // }
+        isLeaving = false;
+    }
 }

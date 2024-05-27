@@ -20,6 +20,8 @@ public class EndTurn : MonoBehaviour{
     private EndGame endGame;
     public TMP_Text ShowWordTurn;
     public List<string> AllShowWord;
+    public List<string> AllShowWordPlayer1;
+    public List<string> AllShowWordPlayer2;
     public int Turn;
 
     // Area
@@ -35,9 +37,12 @@ public class EndTurn : MonoBehaviour{
         wordCheckGrid = FindObjectOfType<WordCheckGrid>();
         endGame = FindObjectOfType<EndGame>();
         dumbWord = FindObjectOfType<DumbWod>();
+        AllShowWordPlayer1 = new List<string>();
+        AllShowWordPlayer2 = new List<string>();
+        AllShowWord = new List<string>();
     }
     void Start(){
-        AllShowWord = new List<string>();
+        
         nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Mathf.RoundToInt(TurnGame) + "/5";
 
         buttonEnd.SetActive(false);
@@ -102,7 +107,13 @@ public class EndTurn : MonoBehaviour{
             nameTurn.text = "Player: " + PhotonNetwork.PlayerList[currentPlayerIndex].NickName + " Turn: " + Turn + "/5";
             if(ShowWord != ""){
                 ShowWordTurn.text = ShowWord;
-                AllShowWord.Add(ShowWord);
+                if(currentPlayerIndex == 1){
+                    AllShowWordPlayer1.Add(ShowWord);
+                    Debug.Log("1");
+                }else{
+                    AllShowWordPlayer2.Add(ShowWord);
+                    Debug.Log("2");
+                }
             }
             StartTurnPlayer();
         }
