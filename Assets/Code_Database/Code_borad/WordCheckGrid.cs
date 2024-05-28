@@ -24,7 +24,6 @@ public class WordCheckGrid : MonoBehaviour
     //Score
     public TMP_Text ScorePlayer1;
     public TMP_Text ScorePlayer2;
-    public int numPlayer1;
 
     //Draw
     private DeckChater deckChaterInstance;
@@ -47,7 +46,7 @@ public class WordCheckGrid : MonoBehaviour
 
     // DorpTable
     public DorpTable TableD;
-    public List<DorpTable> CurrentTiles;
+    [SerializeField] public List<DorpTable> CurrentTiles;
     private List<DorpTable> _wordsFound;
     private List<DorpTable> _WordTiles = new List<DorpTable>();
 
@@ -59,6 +58,8 @@ public class WordCheckGrid : MonoBehaviour
     //EndTurn
     private EndTurn endTurn;
 
+    public int pointsShow;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
@@ -67,7 +68,9 @@ public class WordCheckGrid : MonoBehaviour
     }
     void Start()
     {
-        connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+        // connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+        connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+
         connection = new MySqlConnection(connectionString);
         connection.Open();
         CurrentTiles = new List<DorpTable>();
@@ -187,11 +190,12 @@ public class WordCheckGrid : MonoBehaviour
     private void PointsOnline(int points,int index){
         endTurn.currentPlayerIndex = index;
         if(endTurn.currentPlayerIndex == 0){
-            numPlayer1 += points;
+            ClearPointsShow();
             ScorePlayer1.text = (int.Parse(ScorePlayer1.text) + points).ToString();
             CurrentTiles.Clear();
             TableGrid = Table.None;
         }else{
+            ClearPointsShow();
             ScorePlayer2.text = (int.Parse(ScorePlayer2.text) + points).ToString();
             CurrentTiles.Clear();
             TableGrid = Table.None;
@@ -199,12 +203,31 @@ public class WordCheckGrid : MonoBehaviour
         endGame.Score(int.Parse(ScorePlayer1.text),int.Parse(ScorePlayer2.text));
     }
 
-    private bool CheckWords()
+    private void ClearPointsShow() {
+        if (PhotonNetwork.IsMasterClient) {
+            string currentText = ScorePlayer1.text;
+            int index = currentText.IndexOf('+');
+            if (index != -1) {
+                currentText = currentText.Substring(0, index).Trim();
+            }
+            ScorePlayer1.text = currentText;
+        } else {
+            string currentText = ScorePlayer2.text;
+            
+            int index = currentText.IndexOf('+');
+            if (index != -1) {
+                currentText = currentText.Substring(0, index).Trim();
+            }
+            
+            ScorePlayer2.text = currentText;
+        }
+    }
+
+    public bool CheckWords()
     {
         var words = CreateWords();
         _wordsFound = words;
         var word = GetWord(words[0], words[1]);
-        Debug.Log(word);
         if (_WordTiles.Count != 0)
         {
             var index1 = word.IndexOf('_');
@@ -416,7 +439,7 @@ public class WordCheckGrid : MonoBehaviour
         }
     }
 
-    private int Points(){
+    public int Points(){
         var result = 0;
         var wordAllMultiplier = 1;
         for (int i = 0; i < _wordsFound.Count - 1; i++){
@@ -425,21 +448,25 @@ public class WordCheckGrid : MonoBehaviour
                 for (int j = _wordsFound[i].Column; j <= _wordsFound[i + 1].Column; j++){
                     var tile = Grid[_wordsFound[i].Row,j];
                     num += tile.Points * tile.LetterMultiplier;
-                    if (tile.LetterMultiplier > 1){
-                        tile.LetterMultiplier = 1;
-                    }
                     wordAllMultiplier *= tile.WordMultiplier;
-                    tile.WordMultiplier = 1;
+                    if(tile.HaveLetter == true){
+                        if(tile.LetterMultiplier > 1){
+                            tile.LetterMultiplier = 1;
+                        }
+                        tile.WordMultiplier = 1;
+                    }
                 }
             }else{
                 for (int j = _wordsFound[i].Row; j >= _wordsFound[i + 1].Row; j--){
                     var tile = Grid[j,_wordsFound[i].Column];
                     num += tile.Points * tile.LetterMultiplier;
-                    if (tile.LetterMultiplier > 1){
-                        tile.LetterMultiplier = 1;
-                    }
                     wordAllMultiplier *= tile.WordMultiplier;
-                    tile.WordMultiplier = 1;
+                    if(tile.HaveLetter == true){
+                        if(tile.LetterMultiplier > 1){
+                            tile.LetterMultiplier = 1;
+                        }
+                        tile.WordMultiplier = 1;
+                    }
                 }
             }
             result += num;
@@ -452,6 +479,7 @@ public class WordCheckGrid : MonoBehaviour
         DorpTable tile = Grid[row, column];
         Sprite sprite = Resources.Load<Sprite>(charImageGrid);
         tile.GetComponent<Image>().sprite = sprite;
+        tile.GetComponent<Image>().color = Color.white;
         tile.CurrentLetter = letter;
         tile.Points = Points;
         tile.HasLetter = true;

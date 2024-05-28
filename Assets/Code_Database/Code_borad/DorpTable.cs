@@ -2,6 +2,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Photon.Pun;
 
 public class DorpTable : MonoBehaviour,IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -50,6 +51,7 @@ public class DorpTable : MonoBehaviour,IDropHandler, IPointerEnterHandler, IPoin
             CurrentLetter = "";
             Points = 0;
             CharImageGrid = null;
+            eventData.pointerDrag.GetComponent<Image>().color = Color.white;
             parent.CurrentTiles.Remove(this);
             if (parent.CurrentTiles.Count == 1 || parent.CurrentTiles.Count == 0)
                 parent.TableGrid = WordCheckGrid.Table.None;
@@ -85,6 +87,11 @@ public class DorpTable : MonoBehaviour,IDropHandler, IPointerEnterHandler, IPoin
                 CurrentLetter = eventData.pointerDrag.GetComponent<charimage>().charatletter;
                 Points = eventData.pointerDrag.GetComponent<charimage>().scorecharat;
                 CharImageGrid = eventData.pointerDrag.GetComponent<charimage>().charImage;
+                eventData.pointerDrag.GetComponent<Image>().color = Color.green;
+                if(parent.CheckWords()){
+                    parent.pointsShow = parent.Points();
+                    ShowPointsShow();
+                }
             }
         }
     }
@@ -94,6 +101,31 @@ public class DorpTable : MonoBehaviour,IDropHandler, IPointerEnterHandler, IPoin
         {
             GameObject draggedObject = transform.GetChild(0).gameObject;
             Destroy(draggedObject);
+        }
+    }
+
+    private void ShowPointsShow() {
+        string pointsToShow = "+" + "(" + parent.pointsShow.ToString() + ")";
+        
+        if (PhotonNetwork.IsMasterClient) {
+            string currentText = parent.ScorePlayer1.text;
+            
+            int index = currentText.IndexOf('+');
+            if (index != -1) {
+                currentText = currentText.Substring(0, index).Trim();
+            }
+            
+            parent.ScorePlayer1.text = currentText + " " + pointsToShow;
+        } else {
+            string currentText = parent.ScorePlayer2.text;
+            
+            // Remove any existing pointsToShow
+            int index = currentText.IndexOf('+');
+            if (index != -1) {
+                currentText = currentText.Substring(0, index).Trim();
+            }
+            
+            parent.ScorePlayer2.text = currentText + " " + pointsToShow;
         }
     }
 }

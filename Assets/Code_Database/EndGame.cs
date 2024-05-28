@@ -4,6 +4,7 @@ using TMPro;
 using MySql.Data.MySqlClient;
 using UnityEngine.UI;
 using System;
+using Photon.Realtime;
 
 public class EndGame : MonoBehaviour
 {
@@ -23,7 +24,9 @@ public class EndGame : MonoBehaviour
 
     //SQL
     private MySqlConnection connection;
-    private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+    // private string connectionString = "Server=10.50.16.95;Database=userandpassword;User=root;Password='';SslMode=none;";
+    private string connectionString = "Server=localhost;Database=userandpassword;User=root;Password='';SslMode=none;";
+
 
     void Awake()
     {
@@ -46,20 +49,51 @@ public class EndGame : MonoBehaviour
     }
 
     public void ShowEndGame(){
-        Playone.text = PhotonNetwork.PlayerList[0].NickName;
-        Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (!player.IsLocal)
+            {
+                Playtwo.text = player.NickName;
+            }
+            else 
+            {
+                Playone.text = player.NickName;
+            }
+        }
+        foreach(string num in endTurn.AllShowWordPlayer1){
+            endTurn.AllShowWord.Add(num);
+        }
+        string commit = "--------------------------------";
+        endTurn.AllShowWord.Add(commit);
+        foreach(string num in endTurn.AllShowWordPlayer2){
+            endTurn.AllShowWord.Add(num);
+        }
+        if(PhotonNetwork.IsMasterClient){
+            ScorePlayerOneText.rectTransform.anchoredPosition = new Vector2(-340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);
+            ScorePlayerTwoText.rectTransform.anchoredPosition = new Vector2(340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);
+            if (scorePlayerOne > scorePlayerTwo){
+            Sum.text = "PLAYER: " + Playone.text + " WIN";
+            }else if (scorePlayerOne < scorePlayerTwo){
+                Sum.text = "PLAYER: " + Playtwo.text + " WIN";
+            }else if (scorePlayerOne == scorePlayerTwo){
+                Sum.text = "DRAW";  
+            }
+        }else{
+            ScorePlayerOneText.rectTransform.anchoredPosition = new Vector2(340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);
+            ScorePlayerTwoText.rectTransform.anchoredPosition = new Vector2(-340.7375f, ScorePlayerOneText.rectTransform.anchoredPosition.y);
+            if (scorePlayerOne > scorePlayerTwo){
+            Sum.text = "PLAYER: " + Playtwo.text + " WIN";
+            }else if (scorePlayerOne < scorePlayerTwo){
+                Sum.text = "PLAYER: " + Playone.text + " WIN";
+            }else if (scorePlayerOne == scorePlayerTwo){
+                Sum.text = "DRAW";  
+            }
+        }
         foreach(string word in endTurn.AllShowWord)
         {
             GameObject M = Instantiate(TextVocabulary,AreaText.transform);
             TMP_Text vocabularyText = M.GetComponent<TMP_Text>();
             vocabularyText.text = word;
-        }
-        if (scorePlayerOne > scorePlayerTwo){
-            Sum.text = "PLAYER: " + Playone.text + " WIN";
-        }else if (scorePlayerOne < scorePlayerTwo){
-            Sum.text = "PLAYER: " + Playtwo.text + " WIN";
-        }else if (scorePlayerOne == scorePlayerTwo){
-            Sum.text = "DRAW";  
         }
     }
 

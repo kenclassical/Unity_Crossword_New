@@ -8,23 +8,35 @@ public class GamePlay : MonoBehaviourPun
 {
     public TMP_Text Playone;
     public TMP_Text Playtwo;
+    public TMP_Text Sone;
+    public TMP_Text Stwo;
     public GameObject Showleave;
     public GameObject EndGame;
     private bool isLeaving = false;
+    private EndTurn endTurn;
     private void Awake()
     {
-        // foreach (Player player in PhotonNetwork.PlayerList)
-        // {
-        //     if (!player.IsLocal)
-        //     {
-        //         Playtwo.text = player.NickName;
-        //     }else 
-        //     {
-        //         Playone.text = player.NickName;
-        //     }
-        // }
-        Playone.text = PhotonNetwork.PlayerList[0].NickName;
-        Playtwo.text = PhotonNetwork.PlayerList[1].NickName;
+        endTurn = FindObjectOfType<EndTurn>();
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (!player.IsLocal)
+            {
+                Playtwo.text = player.NickName;
+            }
+            else 
+            {
+                Playone.text = player.NickName;
+            }
+        }
+        endTurn.AllShowWordPlayer1.Add("Player 1:" + Playone.text);
+        endTurn.AllShowWordPlayer2.Add("Player 2:" + Playtwo.text);
+        if(PhotonNetwork.IsMasterClient){
+            Sone.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
+            Stwo.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
+        }else{
+            Sone.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
+            Stwo.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
+        }
     }
 
     private void Update() {
