@@ -28,14 +28,16 @@ public class GamePlay : MonoBehaviourPun
                 Playone.text = player.NickName;
             }
         }
-        endTurn.AllShowWordPlayer1.Add("Player 1:" + Playone.text);
-        endTurn.AllShowWordPlayer2.Add("Player 2:" + Playtwo.text);
         if(PhotonNetwork.IsMasterClient){
             Sone.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
             Stwo.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
+            endTurn.AllShowWordPlayer1.Add("Player 1:" + Playone.text);
+            endTurn.AllShowWordPlayer2.Add("Player 2:" + Playtwo.text);
         }else{
             Sone.rectTransform.anchoredPosition = new Vector2(270f, Sone.rectTransform.anchoredPosition.y);
             Stwo.rectTransform.anchoredPosition = new Vector2(-270f, Sone.rectTransform.anchoredPosition.y);
+            endTurn.AllShowWordPlayer1.Add("Player 1:" + Playtwo.text);
+            endTurn.AllShowWordPlayer2.Add("Player 2:" + Playone.text);
         }
     }
 
